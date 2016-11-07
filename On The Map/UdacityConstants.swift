@@ -10,8 +10,6 @@ import Foundation
 
 extension UdacityClient {
     
-    //Parse Application ID: QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr
-    //REST API Key: QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY
     // MARK: Constants
     struct Constants {
         
@@ -43,10 +41,22 @@ extension UdacityClient {
         
     }
     
+    // MARK: Header Values
+    struct HeaderValues {
+        static let ParseID = "QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr"
+        static let RestApiKey = "QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY"
+    }
+    
+    struct HeaderFields {
+        static let ParseAppID = "X-Parse-Application-Id"
+        static let ParseRestApiKey = "X-Parse-REST-API-Key"
+    }
+    
     // MARK: URL Keys
     struct URLKeys {
         static let UserID = "id"
     }
+    
     
     // MARK: Parameter Keys
     struct ParameterKeys {

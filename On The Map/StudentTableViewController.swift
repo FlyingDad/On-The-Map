@@ -10,14 +10,15 @@ import UIKit
 
 class StudentTableViewController: UITableViewController {
 
+    var students: [Student] {
+        return (UIApplication.sharedApplication().delegate as! AppDelegate).students
+    }
+    
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
 
     override func didReceiveMemoryWarning() {
@@ -32,17 +33,34 @@ class StudentTableViewController: UITableViewController {
     }
 
     override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 5
+        return students.count
     }
 
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("studentTableView") as UITableViewCell!
-
-        // Configure the cell...
-
+        let cell = tableView.dequeueReusableCellWithIdentifier("studentTableViewCell") as! StudentTableViewCell
+        let student = students[indexPath.row]
+        cell.name.text = student.firstName + " " + student.lastName
+        cell.mapString.text = student.mapString
+        if let _ = NSURL(string: student.mediaURL) {
+            cell.pinImage.image = UIImage(named: "MapPinforTable")
+        } else {
+            cell.pinImage.image = UIImage(named: "MapPinNoUrl")
+        }
+        print(student.mediaURL)
         return cell
     }
+
+
+    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        let url = students[indexPath.row].mediaURL
+        let app = UIApplication.sharedApplication()
+        guard let studentUrl = NSURL(string: url) else {
+                return
+            }
+        app.openURL(studentUrl)
+    }
+    
 
 
     /*

@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		4C6F4FE61DC692DF00908062 /* StudentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6F4FE51DC692DF00908062 /* StudentTableViewController.swift */; };
-		4C6F4FE81DC6930B00908062 /* MapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6F4FE71DC6930B00908062 /* MapViewController.swift */; };
+		4C83AA4E1DCB9042003478B4 /* StudentMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C83AA4D1DCB9042003478B4 /* StudentMapViewController.swift */; };
+		4C83AA501DCBAF8A003478B4 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C83AA4F1DCBAF8A003478B4 /* Student.swift */; };
 		4C876F221DC2803200B21C65 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C876F211DC2803200B21C65 /* LoginViewController.swift */; };
 		4C96A4761DC1A45A00139E5D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C96A4751DC1A45A00139E5D /* AppDelegate.swift */; };
 		4C96A47B1DC1A45A00139E5D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4C96A4791DC1A45A00139E5D /* Main.storyboard */; };
@@ -17,11 +18,13 @@
 		4CD35B741DC937DB0078225F /* UdacityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD35B731DC937DB0078225F /* UdacityClient.swift */; };
 		4CD35B761DC938650078225F /* UdacityConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CD35B751DC938650078225F /* UdacityConstants.swift */; };
 		4CF50DB11DC2825F006E1894 /* LoginButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF50DB01DC2825F006E1894 /* LoginButton.swift */; };
+		4CFAA4DA1DCD183400AED165 /* StudentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFAA4D91DCD183400AED165 /* StudentTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4C6F4FE51DC692DF00908062 /* StudentTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentTableViewController.swift; sourceTree = "<group>"; };
-		4C6F4FE71DC6930B00908062 /* MapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MapViewController.swift; sourceTree = "<group>"; };
+		4C83AA4D1DCB9042003478B4 /* StudentMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentMapViewController.swift; sourceTree = "<group>"; };
+		4C83AA4F1DCBAF8A003478B4 /* Student.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
 		4C876F211DC2803200B21C65 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
 		4C96A4721DC1A45A00139E5D /* On The Map.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "On The Map.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		4C96A4751DC1A45A00139E5D /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -32,6 +35,7 @@
 		4CD35B731DC937DB0078225F /* UdacityClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityClient.swift; sourceTree = "<group>"; };
 		4CD35B751DC938650078225F /* UdacityConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityConstants.swift; sourceTree = "<group>"; };
 		4CF50DB01DC2825F006E1894 /* LoginButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginButton.swift; sourceTree = "<group>"; };
+		4CFAA4D91DCD183400AED165 /* StudentTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +53,7 @@
 			isa = PBXGroup;
 			children = (
 				4CA4A2FC1DC933AF004F80D2 /* Client */,
+				4C83AA4F1DCBAF8A003478B4 /* Student.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -57,7 +62,7 @@
 			isa = PBXGroup;
 			children = (
 				4CF50DB01DC2825F006E1894 /* LoginButton.swift */,
-				4C6F4FE51DC692DF00908062 /* StudentTableViewController.swift */,
+				4CFAA4D91DCD183400AED165 /* StudentTableViewCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -66,7 +71,8 @@
 			isa = PBXGroup;
 			children = (
 				4C876F211DC2803200B21C65 /* LoginViewController.swift */,
-				4C6F4FE71DC6930B00908062 /* MapViewController.swift */,
+				4C83AA4D1DCB9042003478B4 /* StudentMapViewController.swift */,
+				4C6F4FE51DC692DF00908062 /* StudentTableViewController.swift */,
 			);
 			name = Controller;
 			sourceTree = "<group>";
@@ -162,7 +168,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0800;
-				LastUpgradeCheck = 0800;
+				LastUpgradeCheck = 0810;
 				ORGANIZATIONNAME = "MGK Technology Solutions, LLC";
 				TargetAttributes = {
 					4C96A4711DC1A45A00139E5D = {
@@ -213,8 +219,10 @@
 				4CD35B741DC937DB0078225F /* UdacityClient.swift in Sources */,
 				4C6F4FE61DC692DF00908062 /* StudentTableViewController.swift in Sources */,
 				4CD35B761DC938650078225F /* UdacityConstants.swift in Sources */,
-				4C6F4FE81DC6930B00908062 /* MapViewController.swift in Sources */,
+				4CFAA4DA1DCD183400AED165 /* StudentTableViewCell.swift in Sources */,
+				4C83AA4E1DCB9042003478B4 /* StudentMapViewController.swift in Sources */,
 				4C96A4761DC1A45A00139E5D /* AppDelegate.swift in Sources */,
+				4C83AA501DCBAF8A003478B4 /* Student.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,6 +266,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -280,7 +289,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -307,6 +316,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -323,7 +333,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
@@ -337,6 +347,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 8TF66VKJD2;
 				INFOPLIST_FILE = "On The Map/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mgktechsolutions.On-The-Map";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -350,6 +361,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = 8TF66VKJD2;
 				INFOPLIST_FILE = "On The Map/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mgktechsolutions.On-The-Map";
 				PRODUCT_NAME = "$(TARGET_NAME)";
