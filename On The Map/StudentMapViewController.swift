@@ -27,6 +27,7 @@ class StudentMapViewController: UIViewController, MKMapViewDelegate {
     
     func createAnnotationArray () {
         for eachStudent in students {
+            //print(eachStudent.firstName, eachStudent.mediaURL)
             let lat = CLLocationDegrees(eachStudent.latitude)
             let long = CLLocationDegrees(eachStudent.longitude)
             let coordinate = CLLocationCoordinate2D(latitude: lat, longitude: long)
@@ -93,12 +94,11 @@ class StudentMapViewController: UIViewController, MKMapViewDelegate {
         getStudentLocations()
     }
     
-    
     @IBAction func logoutPressed(sender: AnyObject) {
         let logoutAlert = UIAlertController(title: "Logout?", message: "Are you sure you want to logout?", preferredStyle: UIAlertControllerStyle.Alert)
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         logoutAlert.addAction(cancelAction)
-        let logoutAction = UIAlertAction(title: "Logout", style: .Default, handler: { (UIAlertAction) in
+        let logoutAction = UIAlertAction(title: "Logout", style: .Destructive, handler: { (UIAlertAction) in
             UdacityClient.sharedInstance().deleteSession()
             self.dismissViewControllerAnimated(true, completion: nil)
         })

@@ -19,6 +19,7 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
     
     @IBOutlet weak var previewMap: MKMapView!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var activityIndicatorPreview: UIActivityIndicatorView!
     
     var geocoder = CLGeocoder()
     var annotation = [MKPointAnnotation]()
@@ -35,6 +36,8 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
         super.viewWillAppear(animated)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.stopAnimating()
+        activityIndicatorPreview.hidesWhenStopped = true
+        activityIndicatorPreview.stopAnimating()
         whereAreYouView.hidden = false
         previewMapView.hidden = true
         studentLocation.becomeFirstResponder()
@@ -63,26 +66,43 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
     }
     
     @IBAction func submitPressed(sender: AnyObject) {
-        // TODO: activity indicator here
+        activityIndicatorPreview.startAnimating()
+        // Get public info for user. We need the name and uniqueID
         UdacityClient.sharedInstance().getPublicUserInfo(UdacityClient.sharedInstance().user.uniqueKey) { (success, errorString) in
             if !success {
-                print(errorString)
+                print("Error getting public user information: \(errorString)")
+                self.updateFailure()
             } else {
                 // Successfully found user, now lets check if the user has a location in the DB
                 UdacityClient.sharedInstance().getUserLocation() {(success, errorString) in
                     if !success {
-                        print("Error geting student location data")
+                        print("Error geting student location data: \(errorString)")
+                        self.updateFailure()
                     } else {
-                        // No location found, so POST a new one
+                        // Save mediaUrl that user entered
                         UdacityClient.sharedInstance().user.mediaUrl = self.mediaUrl.text ?? ""
+                        
+                        // No location found, so POST a new one
                         if !UdacityClient.sharedInstance().user.hasLocation {
-                            print("no location found.")
                             UdacityClient.sharedInstance().postNewLocation({ (success, errorString) in
-                                print("return from post location")
+                                if !success {
+                                    print("Error posting user location \(errorString)")
+                                    self.updateFailure()
+                                } else {
+                                    // Diplay success alert
+                                    self.activityIndicatorPreview.stopAnimating()
+                                    let alert = UIAlertController(title: "Success", message: "Your information was posted successfully", preferredStyle: UIAlertControllerStyle.Alert)
+                                    alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) in
+                                        self.dismissViewControllerAnimated(true, completion: nil)
+                                    }))
+                                    dispatch_async(dispatch_get_main_queue()) {
+                                        self.presentViewController(alert, animated: true, completion: nil)
+                                    }
+                                }
                             })
                         } else {
                            // Location found, so update (PUT) new location after alert
-                            print("location found.")
+                            self.activityIndicatorPreview.stopAnimating()
                             let locationUpdateAlert = UIAlertController(title: "Previous location found!", message: "Do you want to update your information?", preferredStyle: UIAlertControllerStyle.Alert)
                             let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: { (UIAlertAction) in
                                 self.dismissViewControllerAnimated(true, completion: nil)
@@ -90,18 +110,16 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
                             locationUpdateAlert.addAction(cancelAction)
                             
                             let updateAction = UIAlertAction(title: "Update", style: .Destructive, handler: { (UIAlertAction) in
-                                //put new info for user here
+                                //put(update) new info for user here
+                                self.activityIndicatorPreview.startAnimating()
                                 UdacityClient.sharedInstance().putNewLocation({ (success, errorString) in
                                     if !success {
-                                        print("need to handle this put location error")
-                                        print(errorString)
+                                        print("Error putting user information \(errorString)")
+                                        self.updateFailure()
                                     } else {
-                                        print("Successfully updated your info")
-                                    
-                                    
+                                        self.updateSuccess()
                                     }
                                 })
-                                //self.dismissViewControllerAnimated(true, completion: nil)
                             })
                             
                             locationUpdateAlert.addAction(updateAction)
@@ -115,6 +133,27 @@ class InformationPostingViewController: UIViewController, MKMapViewDelegate, UIT
         }
     }
     
+    func updateFailure(){
+        self.activityIndicatorPreview.stopAnimating()
+        let alert = UIAlertController(title: "Connection Error", message: "Please check your Internet connection", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: { (UIAlertAction) in
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }))
+        dispatch_async(dispatch_get_main_queue()) {
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+    }
+    
+    func updateSuccess(){
+        activityIndicatorPreview.stopAnimating()
+        let alert = UIAlertController(title: "Success", message: "Your information was updated.", preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler:{ (UIAlertAction) in
+            self.dismissViewControllerAnimated(true, completion: nil)
+        }))
+        dispatch_async(dispatch_get_main_queue()) {
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
+    }
     
     func focusOnMap(locationMark: CLPlacemark) {
         self.coords = locationMark.location

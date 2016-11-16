@@ -20,22 +20,4 @@ struct User {
     var mapString = ""
     var objectID = ""
     
-//    init(user: NSDictionary){
-//        if let firstName = user["firstName"] as? String{
-//            self.firstName = firstName
-//        }
-//        if let lastname = user["lastName"] as? String {
-//            self.lastName = lastname
-//        }
-//        if let uniqueKey = user["key"] as? String {
-//            self.uniqueKey = uniqueKey
-//        }
-//
-//    }
-//    
-//    init(){
-//        self.firstName = ""
-//        self.lastName = ""
-//        self.uniqueKey = ""
-//    }
 }

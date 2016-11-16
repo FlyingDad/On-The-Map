@@ -24,8 +24,7 @@ class StudentTableViewController: UITableViewController {
         super.viewWillAppear(animated)
     }
 
-    // MARK: - Table view data source
-    
+    // MARK: - Table view data source    
     override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
@@ -34,55 +33,60 @@ class StudentTableViewController: UITableViewController {
         return students.count
     }
 
-
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("studentTableViewCell") as! StudentTableViewCell
-        print(indexPath.row)
         let student = students[indexPath.row]
         cell.name.text = student.firstName + " " + student.lastName
         cell.mapString.text = student.mapString
         
         // Gray pin for invalid URL, Blue pin for valid URL
-        if let _ = NSURL(string: student.mediaURL) {
-            cell.pinImage.image = UIImage(named: "MapPinforTable")
+        if let url = NSURL(string: student.mediaURL) {
+            if UIApplication.sharedApplication().canOpenURL(url) {
+                cell.pinImage.image = UIImage(named: "MapPinforTable")
+            } else {
+                cell.pinImage.image = UIImage(named: "MapPinNoUrl")
+            }
         } else {
             cell.pinImage.image = UIImage(named: "MapPinNoUrl")
         }
         return cell
     }
 
-
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let url = students[indexPath.row].mediaURL
         let app = UIApplication.sharedApplication()
         guard let studentUrl = NSURL(string: url) else {
+            print("Invalid URL: \(students[indexPath.row].mediaURL)")
                 return
             }
-        app.openURL(studentUrl)
+        if app.canOpenURL(studentUrl) {
+            app.openURL(studentUrl)
+        } else {
+            print("Unable to open \(studentUrl)")
+        }
     }
     
-
     @IBAction func refreshButtonPressed(sender: AnyObject) {
         
         // create view on top of table and show activity indicator
-        let myView = UIView(frame: CGRectMake(0, 0, self.tableView.frame.size.width, self.tableView.frame.size.height))
-        myView.backgroundColor = UIColor.whiteColor()
-        myView.alpha = 0.75
-        self.view.addSubview(myView)
+        let refreshView = UIView(frame: CGRectMake(0, 0, self.tableView.frame.size.width, self.tableView.frame.size.height))
+        refreshView.backgroundColor = UIColor.whiteColor()
+        refreshView.alpha = 0.75
+        self.view.addSubview(refreshView)
         let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
         activityIndicator.startAnimating()
         activityIndicator.center = CGPointMake(self.tableView.frame.size.width / 2, self.tableView.frame.size.height / 3)
-        myView.addSubview(activityIndicator)
+        refreshView.addSubview(activityIndicator)
     
         UdacityClient.sharedInstance().getStudentLocations { (success, errorString) in
             if success {
                 dispatch_async(dispatch_get_main_queue()) {
                     self.tableView.reloadData()
-                    myView.removeFromSuperview()
+                    refreshView.removeFromSuperview()
                 }
             } else {
                 self.displayAlert("Alert", message: "Unable to update student data", action: "Dismiss")
-                myView.removeFromSuperview()
+                refreshView.removeFromSuperview()
             }
         }
         
@@ -92,7 +96,7 @@ class StudentTableViewController: UITableViewController {
         let logoutAlert = UIAlertController(title: "Logout?", message: "Are you sure you want to logout?", preferredStyle: UIAlertControllerStyle.Alert)
         let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
         logoutAlert.addAction(cancelAction)
-        let logoutAction = UIAlertAction(title: "Logout", style: .Default, handler: { (UIAlertAction) in
+        let logoutAction = UIAlertAction(title: "Logout", style: .Destructive, handler: { (UIAlertAction) in
             UdacityClient.sharedInstance().deleteSession()
             self.dismissViewControllerAnimated(true, completion: nil)
         })

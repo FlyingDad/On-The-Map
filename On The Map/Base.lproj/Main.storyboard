@@ -265,13 +265,17 @@
                                     <mapView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" mapType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="jDv-xH-b54">
                                         <rect key="frame" x="0.0" y="173" width="375" height="430"/>
                                     </mapView>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter a URL to associated with your location (optional)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="br7-YC-GxK">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Enter a URL to associated with your location.  (optional)" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" minimumFontSize="14" translatesAutoresizingMaskIntoConstraints="NO" id="br7-YC-GxK">
                                         <rect key="frame" x="82" y="20" width="211" height="63"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
                                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="ie: www.google.com" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eZC-2U-pQj">
+                                    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="j8v-B3-Z2C">
+                                        <rect key="frame" x="177" y="291" width="20" height="20"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </activityIndicatorView>
+                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="http://" borderStyle="roundedRect" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="eZC-2U-pQj">
                                         <rect key="frame" x="16" y="103" width="343" height="30"/>
                                         <color key="textColor" red="0.28000700470000001" green="0.4750204086" blue="0.62176942830000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="18"/>
@@ -423,6 +427,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="activityIndicator" destination="4gR-i5-p4L" id="qb9-zm-ir9"/>
+                        <outlet property="activityIndicatorPreview" destination="j8v-B3-Z2C" id="JtO-go-DbP"/>
                         <outlet property="mediaUrl" destination="eZC-2U-pQj" id="59h-bw-tfm"/>
                         <outlet property="previewMap" destination="jDv-xH-b54" id="tmG-Mf-UYW"/>
                         <outlet property="previewMapView" destination="fwl-9S-vZF" id="Km7-2u-iNj"/>

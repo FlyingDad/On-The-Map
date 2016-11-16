@@ -28,8 +28,6 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     }
     
     @IBAction func loginBtnPressed(sender: AnyObject) {
-        
-        // MARK: UNCOMMENT FOR FINAL
 
         if loginEmail.text == "" || loginPassword.text == "" {
             print("Empty login or password field")

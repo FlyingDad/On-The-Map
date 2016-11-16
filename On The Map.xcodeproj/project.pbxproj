@@ -24,7 +24,6 @@
 		4CF7C6FC1DD288B5003908BE /* InformationPostingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF7C6FB1DD288B5003908BE /* InformationPostingViewController.swift */; };
 		4CF7C6FE1DD374BF003908BE /* FindOnMapButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CF7C6FD1DD374BF003908BE /* FindOnMapButton.swift */; };
 		4CFAA4DA1DCD183400AED165 /* StudentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFAA4D91DCD183400AED165 /* StudentTableViewCell.swift */; };
-		4CFCA3C21DD8E6CC004BDEFA /* UdacityConvienence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CFCA3C11DD8E6CC004BDEFA /* UdacityConvienence.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,7 +46,6 @@
 		4CF7C6FB1DD288B5003908BE /* InformationPostingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InformationPostingViewController.swift; sourceTree = "<group>"; };
 		4CF7C6FD1DD374BF003908BE /* FindOnMapButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FindOnMapButton.swift; sourceTree = "<group>"; };
 		4CFAA4D91DCD183400AED165 /* StudentTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentTableViewCell.swift; sourceTree = "<group>"; };
-		4CFCA3C11DD8E6CC004BDEFA /* UdacityConvienence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityConvienence.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -136,7 +134,6 @@
 		4CA4A2FC1DC933AF004F80D2 /* Client */ = {
 			isa = PBXGroup;
 			children = (
-				4CA4A2FE1DC933C8004F80D2 /* FaceBook */,
 				4CA4A2FD1DC933BF004F80D2 /* Udacity */,
 			);
 			name = Client;
@@ -147,16 +144,8 @@
 			children = (
 				4CD35B731DC937DB0078225F /* UdacityClient.swift */,
 				4CD35B751DC938650078225F /* UdacityConstants.swift */,
-				4CFCA3C11DD8E6CC004BDEFA /* UdacityConvienence.swift */,
 			);
 			name = Udacity;
-			sourceTree = "<group>";
-		};
-		4CA4A2FE1DC933C8004F80D2 /* FaceBook */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = FaceBook;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -236,7 +225,6 @@
 				4CF50DB11DC2825F006E1894 /* LoginButton.swift in Sources */,
 				4CD35B741DC937DB0078225F /* UdacityClient.swift in Sources */,
 				4C6F4FE61DC692DF00908062 /* StudentTableViewController.swift in Sources */,
-				4CFCA3C21DD8E6CC004BDEFA /* UdacityConvienence.swift in Sources */,
 				4CF7C6FE1DD374BF003908BE /* FindOnMapButton.swift in Sources */,
 				4CD35B761DC938650078225F /* UdacityConstants.swift in Sources */,
 				4C47ED581DD65FD200FC554B /* User.swift in Sources */,

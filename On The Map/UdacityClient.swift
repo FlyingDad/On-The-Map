@@ -31,34 +31,31 @@ class UdacityClient: NSObject {
         request.HTTPMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        request.HTTPBody = "{\"udacity\": {\"username\": \"mkroth65@gmail.com\", \"password\": \"Imstrong65\"}}".dataUsingEncoding(NSUTF8StringEncoding)
-        // MARK: UNCOMMENT FOR FINAL VERSION
-        //request.HTTPBody = "{\"udacity\": {\"username\": \"\(userName)\", \"password\": \"\(password)\"}}".dataUsingEncoding(NSUTF8StringEncoding)
+        request.HTTPBody = "{\"udacity\": {\"username\": \"\(userName)\", \"password\": \"\(password)\"}}".dataUsingEncoding(NSUTF8StringEncoding)
         let session = NSURLSession.sharedSession()
         
         
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             
-            func displayError(error: String) {
+            func sendError(error: String) {
                 completionHandlerForSession(success: false, errorString: "Session ID error: \(error)")
             }
             guard (error == nil) else {
-                displayError("There was an error in your request:\(error)")
+                sendError("There was an error in your request:\(error)")
                 return
             }
         
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
                 if (response as? NSHTTPURLResponse)?.statusCode == 403 {
-                    displayError("forbidden")
+                    sendError("forbidden")
                 } else {
-                    displayError("Request returned status code other then 2xx: \(response as? NSHTTPURLResponse)?.statusCode)")
+                    sendError("Request returned status code other then 2xx: \(response as? NSHTTPURLResponse)?.statusCode)")
                 }
                 return
             }
             
             guard let  data = data else {
-                displayError("No data was returned")
+                sendError("No data was returned")
                 return
             }
             
@@ -72,15 +69,15 @@ class UdacityClient: NSObject {
             }
             
             guard let resultsDict = parsedResult as? [String: AnyObject] else {
-                displayError("Unable to get session results")
+                sendError("Unable to get session results")
                 return
             }
             guard let accountDict = resultsDict["account"] as? [String: AnyObject] else {
-                displayError("Unable to get account dictionary")
+                sendError("Unable to get account dictionary")
                 return
             }
             guard let sessionDict = resultsDict["session"] as? [String: AnyObject] else {
-                displayError("Unable to get session dictionary")
+                sendError("Unable to get session dictionary")
                 return
             }
 
@@ -88,9 +85,7 @@ class UdacityClient: NSObject {
                 if registered {
                     if let sessionIDString = sessionDict["id"] as? String, key = accountDict["key"] as? String {
                         self.sessionID = sessionIDString
-                        //print("Session iD: \(sessionIDString)")
                         self.user.uniqueKey = key
-                        //print("User key is: \(key)")
                         completionHandlerForSession(success: true, errorString: nil)
                     }
                 }
@@ -117,7 +112,7 @@ class UdacityClient: NSObject {
         }
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request as NSURLRequest) { data, response, error in
-            if error != nil { // Handle error…
+            if error != nil {
                 print("Error")
             }
             guard let data = data else {
@@ -138,23 +133,23 @@ class UdacityClient: NSObject {
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
             
-            func displayError(error: String) {
+            func sendError(error: String) {
                 print(error)
                 completionHandlerForSession(success: false, errorString: error)
             }
             
             guard (error == nil) else {
-                displayError("There was an error in your request:\(error)")
+                sendError("There was an error in your request:\(error)")
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                displayError("Request returned status code other then 2xx")
+                sendError("Request returned status code other then 2xx")
                 return
             }
             
             guard let data = data else {
-                displayError("No data was returned")
+                sendError("No data was returned")
                 return
             }
             
@@ -168,14 +163,13 @@ class UdacityClient: NSObject {
             if let studentLocationArray = parsedResult["results"] as? [[String: AnyObject]] {
                 // clear student array in case we are refreshing data
                 (UIApplication.sharedApplication().delegate as! AppDelegate).students.removeAll()
-
                 for eachStudent in studentLocationArray {
                     let newStudent = Student(student: eachStudent)
                     (UIApplication.sharedApplication().delegate as! AppDelegate).students.append(newStudent)
                 }
                 completionHandlerForSession(success: true, errorString: nil)
             } else {
-                completionHandlerForSession(success: false, errorString: "Unable to create array from parsed reults")
+                completionHandlerForSession(success: false, errorString: "Unable to create array from parsed results")
             }
 
         }
@@ -186,34 +180,32 @@ class UdacityClient: NSObject {
         let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/users/" + userKey)!)
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
-            func displayError(error: String) {
+            func sendError(error: String) {
                 print(error)
                 completionHandlerForSession(success: false, errorString: error)
             }
             
             guard (error == nil) else {
-                displayError("There was an error in your request:\(error)")
+                sendError("There was an error in your request:\(error)")
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                displayError("Request returned status code other then 2xx")
+                sendError("Request returned status code other then 2xx")
                 return
             }
             
             guard let data = data else {
-                displayError("No data was returned")
+                sendError("No data was returned")
                 return
             }
             
-            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
-            //print(NSString(data: newData, encoding: NSUTF8StringEncoding))
-            
+            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
             var parsedResult: AnyObject!
             do {
                 parsedResult = try NSJSONSerialization.JSONObjectWithData(newData, options: .AllowFragments)
             } catch {
-                displayError("Could not parse the session ID")
+                sendError("Could not parse the session ID")
             }
             
             if let user = parsedResult["user"] as? [String: AnyObject] {
@@ -221,7 +213,6 @@ class UdacityClient: NSObject {
                     self.user.firstName = firstName
                     self.user.lastName = lastName
                     completionHandlerForSession(success: true, errorString: nil)
-                    //print(self.userFirstName, self.userLastName, self.userKey)
                 }
             } else {
                 completionHandlerForSession(success: false, errorString: "Unable to get user name")
@@ -235,8 +226,6 @@ class UdacityClient: NSObject {
     // checks to see if the logged on user has already entered a location into the DB
     func getUserLocation(completionHandlerForSession: (success: Bool, errorString: String?) -> Void){
 
-        // TODO: Remove. for testing only
-        //let uniqueKey = "{\"uniqueKey\":\"1234\"}"
         let uniqueKey = "{\"uniqueKey\":\"" + self.user.uniqueKey + "\"}"
         var parameters = [UdacityClient.ParameterKeys.UniqueKeyWhere: uniqueKey]
         let request = NSMutableURLRequest(URL: udacityURLFromParameters(withParameters: parameters, parse: true, withPathExtension: nil))
@@ -245,23 +234,23 @@ class UdacityClient: NSObject {
         request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
-            func displayError(error: String) {
+            func sendError(error: String) {
                 print(error)
                 completionHandlerForSession(success: false, errorString: error)
             }
             
             guard (error == nil) else {
-                displayError("There was an error in your request:\(error)")
+                sendError("There was an error in your request:\(error)")
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                displayError("Request returned status code other then 2xx")
+                sendError("Request returned status code other then 2xx")
                 return
             }
             
             guard let data = data else {
-                displayError("No data was returned")
+                sendError("No data was returned")
                 return
             }
             
@@ -269,9 +258,9 @@ class UdacityClient: NSObject {
             do {
                 parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
             } catch {
-                displayError("Could not parse student location data")
+                sendError("Could not parse student location data")
             }
-            print(parsedResult)
+
             guard let results = parsedResult["results"] as? [[String: AnyObject]]else {
                 print("Error getting student location array")
                 return
@@ -308,37 +297,34 @@ class UdacityClient: NSObject {
         request.HTTPBody = httpBodyString.dataUsingEncoding(NSUTF8StringEncoding)
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
-            func displayError(error: String) {
+            func sendError(error: String) {
                 completionHandlerForSession(success: false, errorString: error)
             }
             
             guard (error == nil) else {
-                displayError("There was an error in your request:\(error)")
+                sendError("There was an error in your request:\(error)")
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                displayError("Request returned status code other then 2xx: \((response as? NSHTTPURLResponse)?.statusCode))")
+                sendError("Request returned status code other then 2xx: \((response as? NSHTTPURLResponse)?.statusCode))")
                 return
             }
             
             guard let data = data else {
-                displayError("No data was returned")
+                sendError("No data was returned")
                 return
             }
             
-            //var parsedResult: AnyObject!
             do {
                 // if we can parse json, assume success
                 let _ = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
                 completionHandlerForSession(success: true, errorString: nil)
             } catch {
-                displayError("Could not post student location")
+                sendError("Could not post student location")
             }
-            //print(parsedResult)
         }
         task.resume()
-    
     }
     
     // This function updates an existing location
@@ -346,8 +332,6 @@ class UdacityClient: NSObject {
         let urlString = "https://parse.udacity.com/parse/classes/StudentLocation/" + self.user.objectID
         let url = NSURL(string: urlString)
         let request = NSMutableURLRequest(URL: url!)
-        
-        print("put url: \(request.URL)")
         
         request.HTTPMethod = "PUT"
         request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
@@ -363,22 +347,22 @@ class UdacityClient: NSObject {
         request.HTTPBody = httpBodyString.dataUsingEncoding(NSUTF8StringEncoding)
         let session = NSURLSession.sharedSession()
         let task = session.dataTaskWithRequest(request) { data, response, error in
-            func displayError(error: String) {
+            func sendError(error: String) {
                 completionHandlerForSession(success: false, errorString: error)
             }
             
             guard (error == nil) else {
-                displayError("There was an error in your request:\(error)")
+                sendError("There was an error in your request:\(error)")
                 return
             }
             
             guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
-                displayError("Request returned status code other then 2xx: \((response as? NSHTTPURLResponse)?.statusCode))")
+                sendError("Request returned status code other then 2xx: \((response as? NSHTTPURLResponse)?.statusCode))")
                 return
             }
             
             guard let data = data else {
-                displayError("No data was returned")
+                sendError("No data was returned")
                 return
             }
             
@@ -387,7 +371,7 @@ class UdacityClient: NSObject {
                 let _ = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
                 completionHandlerForSession(success: true, errorString: nil)
             } catch {
-                displayError("Could not put student location")
+                sendError("Could not put student location")
             }
 
         }

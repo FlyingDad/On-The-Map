@@ -39,7 +39,7 @@ struct Student {
         if let mapString = student["mapString"] as? String {
             self.mapString = mapString
         }
-        if let mediaURL = student["mediaUrl"] as? String {
+        if let mediaURL = student["mediaURL"] as? String {
             self.mediaURL = mediaURL
         }
         if let objectId = student["objectId"] as? String {
