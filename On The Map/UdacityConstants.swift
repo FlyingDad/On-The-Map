@@ -14,31 +14,24 @@ extension UdacityClient {
     struct Constants {
         
         // MARK: URLs
-        static let ApiScheme = "https"
+        static let Scheme = "https"
         static let ApiHost = "www.udacity.com"
-        static let ApiPath = "/api"
+        static let ParseHost = "parse.udacity.com"
+    }
+    
+    struct URLPaths {
+    
+        // MARK: URL Paths
+        static let Api = "/api"
+        static let Parse = "/parse/classes/StudentLocation"
     }
     
     // MARK: Methods
     struct Methods {
         
-        // MARK: Account
-        static let Account = "/account"
-        static let AccountIDFavoriteMovies = "/account/{id}/favorite/movies"
-        static let AccountIDFavorite = "/account/{id}/favorite"
-        static let AccountIDWatchlistMovies = "/account/{id}/watchlist/movies"
-        static let AccountIDWatchlist = "/account/{id}/watchlist"
-        
-        // MARK: Authentication
-        static let AuthenticationTokenNew = "/session"
-        //static let AuthenticationSessionNew = "/authentication/session/new"
-        
-        // MARK: Search
-        static let SearchMovie = "/search/movie"
-        
-        // MARK: Config
-        static let Config = "/configuration"
-        
+        // MARK: Session
+        static let Session = "/session"
+        static let PublicUserData = "/users"
     }
     
     // MARK: Header Values
@@ -50,29 +43,29 @@ extension UdacityClient {
     struct HeaderFields {
         static let ParseAppID = "X-Parse-Application-Id"
         static let ParseRestApiKey = "X-Parse-REST-API-Key"
+        
     }
-    
-    // MARK: URL Keys
-    struct URLKeys {
-        static let UserID = "id"
-    }
-    
     
     // MARK: Parameter Keys
     struct ParameterKeys {
-        static let ApiKey = "api_key"
-        static let SessionID = "session_id"
-        static let RequestToken = "request_token"
-        static let Query = "query"
+        static let UniqueKeyWhere = "where"
+        //=%7B%22uniqueKey%22%3A%22"
+        //static let UniqueKeyEnd = "%22%7D"
+        static let Limit = "limit"
     }
     
-    // MARK: JSON Body Keys
+    // MARK: JSON Body Keys for HTTPBody
     struct JSONBodyKeys {
-        static let MediaType = "media_type"
-        static let MediaID = "media_id"
-        static let Favorite = "favorite"
-        static let Watchlist = "watchlist"
+        static let UniqueKey = "uniqueKey"
+        static let FirstName = "firsName"
+        static let LastName = "lastName"
+        static let MapString = "mapString"
+        static let MediaUrl = "mediaURL"
+        static let Latitude = "latitude"
+        static let Longitude = "longitude"
     }
+    
+    // ????? Below?
     
     // MARK: JSON Response Keys
     struct JSONResponseKeys {

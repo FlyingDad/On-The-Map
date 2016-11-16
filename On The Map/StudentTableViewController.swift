@@ -14,16 +14,14 @@ class StudentTableViewController: UITableViewController {
         return (UIApplication.sharedApplication().delegate as! AppDelegate).students
     }
     
-    
+    @IBOutlet weak var refreshButton: UIBarButtonItem!
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    override func viewWillAppear(animated: Bool) {
+        super.viewWillAppear(animated)
     }
 
     // MARK: - Table view data source
@@ -39,15 +37,17 @@ class StudentTableViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("studentTableViewCell") as! StudentTableViewCell
+        print(indexPath.row)
         let student = students[indexPath.row]
         cell.name.text = student.firstName + " " + student.lastName
         cell.mapString.text = student.mapString
+        
+        // Gray pin for invalid URL, Blue pin for valid URL
         if let _ = NSURL(string: student.mediaURL) {
             cell.pinImage.image = UIImage(named: "MapPinforTable")
         } else {
             cell.pinImage.image = UIImage(named: "MapPinNoUrl")
         }
-        print(student.mediaURL)
         return cell
     }
 
@@ -62,50 +62,52 @@ class StudentTableViewController: UITableViewController {
     }
     
 
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
+    @IBAction func refreshButtonPressed(sender: AnyObject) {
+        
+        // create view on top of table and show activity indicator
+        let myView = UIView(frame: CGRectMake(0, 0, self.tableView.frame.size.width, self.tableView.frame.size.height))
+        myView.backgroundColor = UIColor.whiteColor()
+        myView.alpha = 0.75
+        self.view.addSubview(myView)
+        let activityIndicator = UIActivityIndicatorView(activityIndicatorStyle: .Gray)
+        activityIndicator.startAnimating()
+        activityIndicator.center = CGPointMake(self.tableView.frame.size.width / 2, self.tableView.frame.size.height / 3)
+        myView.addSubview(activityIndicator)
+    
+        UdacityClient.sharedInstance().getStudentLocations { (success, errorString) in
+            if success {
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.tableView.reloadData()
+                    myView.removeFromSuperview()
+                }
+            } else {
+                self.displayAlert("Alert", message: "Unable to update student data", action: "Dismiss")
+                myView.removeFromSuperview()
+            }
+        }
+        
     }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+    
+    @IBAction func logoutPressed(sender: AnyObject) {
+        let logoutAlert = UIAlertController(title: "Logout?", message: "Are you sure you want to logout?", preferredStyle: UIAlertControllerStyle.Alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        logoutAlert.addAction(cancelAction)
+        let logoutAction = UIAlertAction(title: "Logout", style: .Default, handler: { (UIAlertAction) in
+            UdacityClient.sharedInstance().deleteSession()
+            self.dismissViewControllerAnimated(true, completion: nil)
+        })
+        logoutAlert.addAction(logoutAction)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.presentViewController(logoutAlert, animated: true, completion: nil)
+        }
     }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+    
+    func displayAlert(title: String, message: String, action: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
+        alert.addAction(UIAlertAction(title: action, style: UIAlertActionStyle.Default, handler: nil))
+        dispatch_async(dispatch_get_main_queue()) {
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
     }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
+    
 }

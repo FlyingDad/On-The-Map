@@ -8,8 +8,6 @@
 
 import Foundation
 
-
-
 struct Student {
     
     var firstName: String = ""

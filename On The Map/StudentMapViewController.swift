@@ -22,17 +22,7 @@ class StudentMapViewController: UIViewController, MKMapViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         mapView.delegate = self
-        
-        UdacityClient.sharedInstance().getStudentLocations { (success, errorString) in
-            if success {
-                self.createAnnotationArray()
-                dispatch_async(dispatch_get_main_queue()) {
-                    self.mapView.addAnnotations(self.annotations)
-                }
-            } else {
-                self.displayAlert("Alert", message: "Unable to retrieve map data", action: "Dismiss")
-            }
-        }
+        getStudentLocations()
     }
     
     func createAnnotationArray () {
@@ -49,10 +39,7 @@ class StudentMapViewController: UIViewController, MKMapViewDelegate {
     }
     
     // MARK: - MKMapViewDelegate
-    
-    // Here we create a view with a "right callout accessory view". You might choose to look into other
-    // decoration alternatives. Notice the similarity between this method and the cellForRowAtIndexPath
-    // method in TableViewDataSource.
+
     func mapView(mapView: MKMapView, viewForAnnotation annotation: MKAnnotation) -> MKAnnotationView? {
         
         let reuseId = "pin"
@@ -86,6 +73,42 @@ class StudentMapViewController: UIViewController, MKMapViewDelegate {
         }
     }
     
+    func getStudentLocations() {
+        UdacityClient.sharedInstance().getStudentLocations { (success, errorString) in
+            if success {
+                self.createAnnotationArray()
+                dispatch_async(dispatch_get_main_queue()) {
+                    self.mapView.addAnnotations(self.annotations)
+                }
+            } else {
+                self.displayAlert("Alert", message: "Unable to update map data", action: "Dismiss")
+            }
+        }
+    }
+    
+    @IBAction func refreshButtonPressed(sender: AnyObject) {
+        // clear map annotations, then clear annotations array
+        mapView.removeAnnotations(annotations)
+        annotations.removeAll()
+        getStudentLocations()
+    }
+    
+    
+    @IBAction func logoutPressed(sender: AnyObject) {
+        let logoutAlert = UIAlertController(title: "Logout?", message: "Are you sure you want to logout?", preferredStyle: UIAlertControllerStyle.Alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: nil)
+        logoutAlert.addAction(cancelAction)
+        let logoutAction = UIAlertAction(title: "Logout", style: .Default, handler: { (UIAlertAction) in
+            UdacityClient.sharedInstance().deleteSession()
+            self.dismissViewControllerAnimated(true, completion: nil)
+        })
+        logoutAlert.addAction(logoutAction)
+        dispatch_async(dispatch_get_main_queue()) {
+            self.presentViewController(logoutAlert, animated: true, completion: nil)
+        }
+    }
+    
+    
     func displayAlert(title: String, message: String, action: String) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.Alert)
         alert.addAction(UIAlertAction(title: action, style: UIAlertActionStyle.Default, handler: nil))
@@ -93,4 +116,6 @@ class StudentMapViewController: UIViewController, MKMapViewDelegate {
             self.presentViewController(alert, animated: true, completion: nil)
         }
     }
+
+
 }

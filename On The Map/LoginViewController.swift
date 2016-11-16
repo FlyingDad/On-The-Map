@@ -41,8 +41,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
 
         activityIndicator.alpha = 1.0
         activityIndicator.startAnimating()
-        
-        UdacityClient.sharedInstance().getSessionId(loginEmail.text!, password: loginPassword.text!){ (success, errorString) -> () in
+
+        UdacityClient.sharedInstance().getSessionId(loginEmail.text!, password: loginPassword.text!){ (success, errorString) in
             
             if success {
                 self.stopActivityIndicator()
@@ -64,6 +64,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             }
         }
 
+    }
+    
+    @IBAction func createUdacityAccount(sender: AnyObject) {
+        UIApplication.sharedApplication().openURL(NSURL(string: "https://www.udacity.com")!)
     }
     
     func displayAlert(title: String, message: String, action: String) {

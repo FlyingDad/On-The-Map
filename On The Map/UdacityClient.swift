@@ -21,15 +21,17 @@ class UdacityClient: NSObject {
     
     // authentication state
     var sessionID: String? = nil
-
+    
+    // User info. We get this if the user us submitting a new location
+    var user = User()
     
     func getSessionId (userName: String, password: String, completionHandlerForSession: (success: Bool, errorString: String?) -> Void) {
         
-        let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/session")!)
+        let request = NSMutableURLRequest(URL: udacityURLFromParameters(withParameters: nil, parse: false, withPathExtension: UdacityClient.Methods.Session))
         request.HTTPMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Accept")
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
+
         request.HTTPBody = "{\"udacity\": {\"username\": \"mkroth65@gmail.com\", \"password\": \"Imstrong65\"}}".dataUsingEncoding(NSUTF8StringEncoding)
         // MARK: UNCOMMENT FOR FINAL VERSION
         //request.HTTPBody = "{\"udacity\": {\"username\": \"\(userName)\", \"password\": \"\(password)\"}}".dataUsingEncoding(NSUTF8StringEncoding)
@@ -39,8 +41,7 @@ class UdacityClient: NSObject {
         let task = session.dataTaskWithRequest(request) { (data, response, error) in
             
             func displayError(error: String) {
-                print(error)
-                completionHandlerForSession(success: false, errorString: error)
+                completionHandlerForSession(success: false, errorString: "Session ID error: \(error)")
             }
             guard (error == nil) else {
                 displayError("There was an error in your request:\(error)")
@@ -56,7 +57,7 @@ class UdacityClient: NSObject {
                 return
             }
             
-            guard let data = data else {
+            guard let  data = data else {
                 displayError("No data was returned")
                 return
             }
@@ -69,7 +70,7 @@ class UdacityClient: NSObject {
             } catch {
                 print("Could not parse the session ID")
             }
-
+            
             guard let resultsDict = parsedResult as? [String: AnyObject] else {
                 displayError("Unable to get session results")
                 return
@@ -83,17 +84,48 @@ class UdacityClient: NSObject {
                 return
             }
 
-            if let registered = accountDict["registered"] as? Bool {
+            if let registered = accountDict["registered"] as? Bool{
                 if registered {
-                    if let sessionIDString = sessionDict["id"] as? String {
+                    if let sessionIDString = sessionDict["id"] as? String, key = accountDict["key"] as? String {
                         self.sessionID = sessionIDString
+                        //print("Session iD: \(sessionIDString)")
+                        self.user.uniqueKey = key
+                        //print("User key is: \(key)")
                         completionHandlerForSession(success: true, errorString: nil)
                     }
                 }
             } else {
                 completionHandlerForSession(success: false, errorString: "Login failed")
             }
-            
+        }
+        task.resume()
+    }
+    
+    func deleteSession() {
+        
+        let request = NSMutableURLRequest(URL: udacityURLFromParameters(withParameters: nil, parse: false, withPathExtension: UdacityClient.Methods.Session))
+        request.HTTPMethod = "DELETE"
+        var xsrfCookie: NSHTTPCookie? = nil
+        let sharedCookieStorage = NSHTTPCookieStorage.sharedHTTPCookieStorage()
+        for cookie in sharedCookieStorage.cookies! {
+            if cookie.name == "XSRF-TOKEN" {
+                xsrfCookie = cookie
+            }
+        }
+        if let xsrfCookie = xsrfCookie {
+            request.setValue(xsrfCookie.value, forHTTPHeaderField: "X-XSRF-TOKEN")
+        }
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request as NSURLRequest) { data, response, error in
+            if error != nil { // Handle error…
+                print("Error")
+            }
+            guard let data = data else {
+                print("Data error in deleteing session")
+                return
+            }
+            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5))
+            print(NSString(data: newData, encoding: NSUTF8StringEncoding)!)
         }
         task.resume()
     }
@@ -134,7 +166,9 @@ class UdacityClient: NSObject {
             }
 
             if let studentLocationArray = parsedResult["results"] as? [[String: AnyObject]] {
-                
+                // clear student array in case we are refreshing data
+                (UIApplication.sharedApplication().delegate as! AppDelegate).students.removeAll()
+
                 for eachStudent in studentLocationArray {
                     let newStudent = Student(student: eachStudent)
                     (UIApplication.sharedApplication().delegate as! AppDelegate).students.append(newStudent)
@@ -147,6 +181,243 @@ class UdacityClient: NSObject {
         }
         task.resume()    
     }
+    
+    func getPublicUserInfo(userKey: String, completionHandlerForSession: (success: Bool, errorString: String?) -> Void) {
+        let request = NSMutableURLRequest(URL: NSURL(string: "https://www.udacity.com/api/users/" + userKey)!)
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            func displayError(error: String) {
+                print(error)
+                completionHandlerForSession(success: false, errorString: error)
+            }
+            
+            guard (error == nil) else {
+                displayError("There was an error in your request:\(error)")
+                return
+            }
+            
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                displayError("Request returned status code other then 2xx")
+                return
+            }
+            
+            guard let data = data else {
+                displayError("No data was returned")
+                return
+            }
+            
+            let newData = data.subdataWithRange(NSMakeRange(5, data.length - 5)) /* subset response data! */
+            //print(NSString(data: newData, encoding: NSUTF8StringEncoding))
+            
+            var parsedResult: AnyObject!
+            do {
+                parsedResult = try NSJSONSerialization.JSONObjectWithData(newData, options: .AllowFragments)
+            } catch {
+                displayError("Could not parse the session ID")
+            }
+            
+            if let user = parsedResult["user"] as? [String: AnyObject] {
+                if let firstName = user["first_name"] as? String, lastName = user["last_name"] as? String {
+                    self.user.firstName = firstName
+                    self.user.lastName = lastName
+                    completionHandlerForSession(success: true, errorString: nil)
+                    //print(self.userFirstName, self.userLastName, self.userKey)
+                }
+            } else {
+                completionHandlerForSession(success: false, errorString: "Unable to get user name")
+            }
+        }
+        task.resume()
+    
+    
+    }
+    
+    // checks to see if the logged on user has already entered a location into the DB
+    func getUserLocation(completionHandlerForSession: (success: Bool, errorString: String?) -> Void){
+
+        // TODO: Remove. for testing only
+        //let uniqueKey = "{\"uniqueKey\":\"1234\"}"
+        let uniqueKey = "{\"uniqueKey\":\"" + self.user.uniqueKey + "\"}"
+        var parameters = [UdacityClient.ParameterKeys.UniqueKeyWhere: uniqueKey]
+        let request = NSMutableURLRequest(URL: udacityURLFromParameters(withParameters: parameters, parse: true, withPathExtension: nil))
+        print(request.URL)
+        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            func displayError(error: String) {
+                print(error)
+                completionHandlerForSession(success: false, errorString: error)
+            }
+            
+            guard (error == nil) else {
+                displayError("There was an error in your request:\(error)")
+                return
+            }
+            
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                displayError("Request returned status code other then 2xx")
+                return
+            }
+            
+            guard let data = data else {
+                displayError("No data was returned")
+                return
+            }
+            
+            var parsedResult: AnyObject!
+            do {
+                parsedResult = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+            } catch {
+                displayError("Could not parse student location data")
+            }
+            print(parsedResult)
+            guard let results = parsedResult["results"] as? [[String: AnyObject]]else {
+                print("Error getting student location array")
+                return
+            }
+            if results.count == 0 {
+                self.user.hasLocation = false
+            } else {
+                if let objectId = results[0]["objectId"] as? String {
+                    self.user.hasLocation = true
+                    self.user.objectID = objectId
+                    completionHandlerForSession(success: true, errorString: nil)
+                }
+            }
+            
+        }
+        task.resume()
+    }
+    
+    // This function posts a new location
+    func postNewLocation(completionHandlerForSession: (success: Bool, errorString: String?) -> Void){    
+        let request = NSMutableURLRequest(URL: udacityURLFromParameters(withParameters: nil, parse: true, withPathExtension: nil))
+        request.HTTPMethod = "POST"
+        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        let httpBodyString = "{\"uniqueKey\": \"" + self.user.uniqueKey +
+            "\", \"firstName\": \"" + self.user.firstName +
+            "\", \"lastName\": \"" + self.user.lastName +
+            "\", \"mapString\": \"" + self.user.mapString +
+            "\", \"mediaURL\": \"" + self.user.mediaUrl! +
+            "\", \"latitude\": " + String(self.user.latitude) +
+            ", \"longitude\": " + String(self.user.longitude) + "}"
+        request.HTTPBody = httpBodyString.dataUsingEncoding(NSUTF8StringEncoding)
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            func displayError(error: String) {
+                completionHandlerForSession(success: false, errorString: error)
+            }
+            
+            guard (error == nil) else {
+                displayError("There was an error in your request:\(error)")
+                return
+            }
+            
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                displayError("Request returned status code other then 2xx: \((response as? NSHTTPURLResponse)?.statusCode))")
+                return
+            }
+            
+            guard let data = data else {
+                displayError("No data was returned")
+                return
+            }
+            
+            //var parsedResult: AnyObject!
+            do {
+                // if we can parse json, assume success
+                let _ = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                completionHandlerForSession(success: true, errorString: nil)
+            } catch {
+                displayError("Could not post student location")
+            }
+            //print(parsedResult)
+        }
+        task.resume()
+    
+    }
+    
+    // This function updates an existing location
+    func putNewLocation(completionHandlerForSession: (success: Bool, errorString: String?) -> Void){
+        let urlString = "https://parse.udacity.com/parse/classes/StudentLocation/" + self.user.objectID
+        let url = NSURL(string: urlString)
+        let request = NSMutableURLRequest(URL: url!)
+        
+        print("put url: \(request.URL)")
+        
+        request.HTTPMethod = "PUT"
+        request.addValue("QrX47CA9cyuGewLdsL7o5Eb8iug6Em8ye0dnAbIr", forHTTPHeaderField: "X-Parse-Application-Id")
+        request.addValue("QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY", forHTTPHeaderField: "X-Parse-REST-API-Key")
+        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        let httpBodyString = "{\"uniqueKey\": \"" + self.user.uniqueKey +
+            "\", \"firstName\": \"" + self.user.firstName +
+            "\", \"lastName\": \"" + self.user.lastName +
+            "\", \"mapString\": \"" + self.user.mapString +
+            "\", \"mediaURL\": \"" + self.user.mediaUrl! +
+            "\", \"latitude\": " + String(self.user.latitude) +
+            ", \"longitude\": " + String(self.user.longitude) + "}"
+        request.HTTPBody = httpBodyString.dataUsingEncoding(NSUTF8StringEncoding)
+        let session = NSURLSession.sharedSession()
+        let task = session.dataTaskWithRequest(request) { data, response, error in
+            func displayError(error: String) {
+                completionHandlerForSession(success: false, errorString: error)
+            }
+            
+            guard (error == nil) else {
+                displayError("There was an error in your request:\(error)")
+                return
+            }
+            
+            guard let statusCode = (response as? NSHTTPURLResponse)?.statusCode where statusCode >= 200 && statusCode <= 299 else {
+                displayError("Request returned status code other then 2xx: \((response as? NSHTTPURLResponse)?.statusCode))")
+                return
+            }
+            
+            guard let data = data else {
+                displayError("No data was returned")
+                return
+            }
+            
+            do {
+                // if we can parse json, assume success
+                let _ = try NSJSONSerialization.JSONObjectWithData(data, options: .AllowFragments)
+                completionHandlerForSession(success: true, errorString: nil)
+            } catch {
+                displayError("Could not put student location")
+            }
+
+        }
+        task.resume()
+    }
+    
+    // create a URL from parameters
+    private func udacityURLFromParameters(withParameters parameters: [String:AnyObject]? = nil, parse: Bool, withPathExtension: String? = nil) -> NSURL {
+        
+        let components = NSURLComponents()
+        components.scheme = UdacityClient.Constants.Scheme
+        if parse {
+            components.host = UdacityClient.Constants.ParseHost
+            components.path = UdacityClient.URLPaths.Parse
+        } else {
+            components.host = UdacityClient.Constants.ApiHost
+            components.path = UdacityClient.URLPaths.Api + (withPathExtension ?? "")
+        }
+        
+        if parameters != nil {
+            components.queryItems = [NSURLQueryItem]()
+        
+            for (key, value) in parameters! {
+                let queryItem = NSURLQueryItem(name: key, value: "\(value)")
+                components.queryItems!.append(queryItem)
+            }
+        }
+        return components.URL!
+    }
+
     
     class func sharedInstance() -> UdacityClient {
         struct Singleton {
