@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4C47ED581DD65FD200FC554B /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C47ED571DD65FD200FC554B /* User.swift */; };
+		4C4F66BE1DDE63FE0099BD4D /* StudentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C4F66BD1DDE63FE0099BD4D /* StudentData.swift */; };
 		4C6F4FE61DC692DF00908062 /* StudentTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C6F4FE51DC692DF00908062 /* StudentTableViewController.swift */; };
 		4C83AA4E1DCB9042003478B4 /* StudentMapViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C83AA4D1DCB9042003478B4 /* StudentMapViewController.swift */; };
 		4C83AA501DCBAF8A003478B4 /* Student.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C83AA4F1DCBAF8A003478B4 /* Student.swift */; };
@@ -28,6 +29,7 @@
 
 /* Begin PBXFileReference section */
 		4C47ED571DD65FD200FC554B /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		4C4F66BD1DDE63FE0099BD4D /* StudentData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentData.swift; sourceTree = "<group>"; };
 		4C6F4FE51DC692DF00908062 /* StudentTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentTableViewController.swift; sourceTree = "<group>"; };
 		4C83AA4D1DCB9042003478B4 /* StudentMapViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StudentMapViewController.swift; sourceTree = "<group>"; };
 		4C83AA4F1DCBAF8A003478B4 /* Student.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Student.swift; sourceTree = "<group>"; };
@@ -64,6 +66,7 @@
 			children = (
 				4CA4A2FC1DC933AF004F80D2 /* Client */,
 				4C83AA4F1DCBAF8A003478B4 /* Student.swift */,
+				4C4F66BD1DDE63FE0099BD4D /* StudentData.swift */,
 				4C47ED571DD65FD200FC554B /* User.swift */,
 			);
 			name = Model;
@@ -235,6 +238,7 @@
 				4C96A4761DC1A45A00139E5D /* AppDelegate.swift in Sources */,
 				4CF7C6FC1DD288B5003908BE /* InformationPostingViewController.swift in Sources */,
 				4C83AA501DCBAF8A003478B4 /* Student.swift in Sources */,
+				4C4F66BE1DDE63FE0099BD4D /* StudentData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

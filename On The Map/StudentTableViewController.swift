@@ -11,7 +11,7 @@ import UIKit
 class StudentTableViewController: UITableViewController {
 
     var students: [Student] {
-        return (UIApplication.sharedApplication().delegate as! AppDelegate).students
+        return StudentData.sharedInstance().students
     }
     
     @IBOutlet weak var refreshButton: UIBarButtonItem!

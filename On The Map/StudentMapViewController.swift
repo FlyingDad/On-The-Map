@@ -14,7 +14,7 @@ class StudentMapViewController: UIViewController, MKMapViewDelegate {
     @IBOutlet weak var mapView: MKMapView!
     
     var students: [Student] {
-        return (UIApplication.sharedApplication().delegate as! AppDelegate).students
+        return StudentData.sharedInstance().students
     }
     
     var annotations = [MKPointAnnotation]()

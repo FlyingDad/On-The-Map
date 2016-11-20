@@ -16,7 +16,7 @@ class UdacityClient: NSObject {
     var session = NSURLSession.sharedSession()
     
     var studentss: [Student] {
-        return (UIApplication.sharedApplication().delegate as! AppDelegate).students
+        return StudentData.sharedInstance().students
     }
     
     // authentication state
@@ -162,10 +162,10 @@ class UdacityClient: NSObject {
 
             if let studentLocationArray = parsedResult["results"] as? [[String: AnyObject]] {
                 // clear student array in case we are refreshing data
-                (UIApplication.sharedApplication().delegate as! AppDelegate).students.removeAll()
+                StudentData.sharedInstance().students.removeAll()
                 for eachStudent in studentLocationArray {
                     let newStudent = Student(student: eachStudent)
-                    (UIApplication.sharedApplication().delegate as! AppDelegate).students.append(newStudent)
+                    StudentData.sharedInstance().students.append(newStudent)
                 }
                 completionHandlerForSession(success: true, errorString: nil)
             } else {
