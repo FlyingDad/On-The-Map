@@ -1,20 +1,29 @@
 # On-The-Map
 
-## Project Overview
-Students will create an app with a map that shows information posted by other students. 
-The map will contain pins that show the location where other students have reported studying. 
+![Language](https://img.shields.io/badge/language-Swift%203-orange.svg)
+
+## Notice
+The current version is working with Xcode Version 8.
+
+## Description
+For Udacity students, this app will display a map that shows information posted by other students. 
+The map contains pins that show the location where other students have reported studying. 
 By tapping on the pin users can see a URL for something the student finds interesting. 
 The user will be able to add their own data by posting a string that can be geocoded to a location, and a URL.
 
 ## Why this project?
-This project will give students an opportunity to post and retrieve data from a network resource using Apple’s networking framework. 
-It will also allow students to authenticate a user.
+This project will give students an opportunity to post and retrieve data from a network resource using Apple’s networking framework. It also features:
 
-## What will you learn?
-Accessing networked data using Apple’s URL loading framework
-Authenticating a user using over a network connection
-Creating user interfaces that are responsive, and communicate network activity
-Use Core Location and the MapKit framework for to display annotated pins on a map
-Why is this project meaningful to my career?
-Working with data from networked sources is as important to iOS development as creating good user interfaces. 
-Completing this project shows that a developer can both read and write from RESTful networked APIs.
+* Multiple views of content
+* Core Location and MapKit
+* Multiple type of controls
+* Iteracting with a Parse Server
+* Networking code encapsulated into networking classes
+
+## Contributing
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
